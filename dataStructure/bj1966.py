@@ -1,29 +1,22 @@
 from sys import stdin
-from queue import PriorityQueue
+from collections import deque
 
 tc = int(stdin.readline().rstrip())
 
 for _ in range(tc):
     N, M = map(int, stdin.readline().split())
-    print_list = []
-
-    queue = list(stdin.readline().split())
-    stack = []
-    k = 1
-    for i in range(len(queue)):
-        stack.append((queue[i], k))
-        k += 1
-
-    while len(print_list) != N:
-        pop = stack.pop(0)
-        tmp = []
-        for i in range(len(print_list)):
-            if pop[0] > print_list[i]:
-                tmp.append(print_list[i])
-        for i in range(len(tmp)):
-            print_list.remove(tmp[i])
-            stack.append(tmp[i])
-
-        print_list.append(pop)
-
-    print(print_list)
+    queue = deque(map(int, stdin.readline().split()))
+    cnt = 0
+    while queue:
+        top = max(queue)
+        M -= 1
+        pop = queue.popleft()
+        if top != pop:
+            queue.append(pop)
+            if M < 0:
+                M = len(queue) - 1
+        else:
+            cnt += 1
+            if M == -1:
+                print(cnt)
+                break
