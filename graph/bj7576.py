@@ -1,48 +1,40 @@
 from sys import stdin
+from collections import deque
+
+
+def bfs(M, N, box):
+    dx = [0, 0, -1, 1]
+    dy = [1, -1, 0, 0]
+
+    days = -1
+
+    while queue:
+        days += 1
+        for _ in range(len(queue)):
+            x, y = queue.popleft()
+
+            for i in range(4):
+                nx = x + dx[i]
+                ny = y + dy[i]
+
+                if 0 <= nx < N and 0 <= ny < M and box[nx][ny] == 0:
+                    box[nx][ny] = box[x][y] + 1
+                    queue.append([nx, ny])
+
+    for b in box:
+        if 0 in b:
+            return -1
+    return days
+
 
 M, N = map(int, stdin.readline().split())
-
-matrix = [[0] * M for _ in range(N)]
-
-matrix = [list(map(int, stdin.readline().split())) for _ in range(N)]
-
-
-dx = [0, 1, 0, -1]
-dy = [1, 0, -1, 0]
-
-cnt = 0
-visited = [[0] * M for _ in range(N)]
-queue = []
+box = []
+queue = deque()
 for i in range(N):
+    row = list(map(int, stdin.readline().split()))
     for j in range(M):
-        if matrix[i][j] == 1 and visited[i][j] == 0:
-            visited[i][j] = 1
-            queue.append((i, j))
+        if row[j] == 1:
+            queue.append([i, j])
+    box.append(row)
 
-while queue:
-    x, y = queue.pop(0)
-
-    for i in range(4):
-        nx = x + dx[i]
-        ny = y + dy[i]
-
-        if 0 <= nx < N and 0 <= ny < M:
-            if visited[nx][ny] == 0 and matrix[nx][ny] == 0:
-                queue.append((nx, ny))
-                visited[nx][ny] = 1
-                matrix[nx][ny] = matrix[x][y] + 1
-
-max_num = 0
-chk = False
-
-for i in range(N):
-    for j in range(M):
-        max_num = max(max_num, int(matrix[i][j]))
-        if matrix[i][j] == 0:
-            chk = True
-            break
-
-if chk:
-    print(-1)
-else:
-    print(max_num-1)
+print(bfs(M, N, box))
